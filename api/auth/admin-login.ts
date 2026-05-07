@@ -1,3 +1,5 @@
+import '../_lib/loadEnv'
+import '../_lib/loadEnv'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'

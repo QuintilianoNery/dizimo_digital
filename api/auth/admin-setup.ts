@@ -1,3 +1,4 @@
+import '../_lib/loadEnv'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
@@ -11,21 +12,65 @@ const schema = z.object({
 })
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' })
+  try {
+      console.log('BODY:', req.body)
+    if (req.method !== 'POST') {
+      return res.status(405).json({
+        error: 'Método não permitido',
+      })
+    }
 
-  const count = await prisma.administrador.count()
-  if (count > 0) return res.status(409).json({ error: 'Administrador já configurado' })
+    const count = await prisma.administrador.count()
 
-  const parsed = schema.safeParse(req.body)
-  if (!parsed.success) return res.status(400).json({ error: 'Dados inválidos', details: parsed.error.flatten() })
+    if (count > 0) {
+      return res.status(409).json({
+        error: 'Administrador já configurado',
+      })
+    }
 
-  const { nome, email, senha } = parsed.data
-  const senhaHash = await bcrypt.hash(senha, 12)
+    const parsed = schema.safeParse(req.body)
 
-  const admin = await prisma.administrador.create({
-    data: { nome, emailLogin: email, senhaHash },
-  })
+    if (!parsed.success) {
+      return res.status(400).json({
+        error: 'Dados inválidos',
+        details: parsed.error.flatten(),
+      })
+    }
 
-  setSessionCookie(res, { id: admin.id, role: 'admin' })
-  return res.status(201).json({ id: admin.id, nome: admin.nome, email: admin.emailLogin, role: 'admin' })
+    const { nome, email, senha } = parsed.data
+
+    const senhaHash = await bcrypt.hash(senha, 12)
+
+    const admin = await prisma.administrador.create({
+      data: {
+        nome,
+        emailLogin: email,
+        senhaHash,
+      },
+    })
+
+    setSessionCookie(res, {
+      id: admin.id,
+      role: 'admin',
+    })
+
+    return res.status(201).json({
+      id: admin.id,
+      nome: admin.nome,
+      email: admin.emailLogin,
+      role: 'admin',
+    })
+
+  } catch (error: unknown) {
+    console.error('ERRO ADMIN SETUP:', error)
+
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'Erro interno ao configurar administrador'
+
+    return res.status(500).json({
+      error: message,
+    })
+  }
 }

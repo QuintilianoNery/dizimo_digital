@@ -1,3 +1,4 @@
+import '../../_lib/loadEnv'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { prisma } from '../../_lib/prisma'
 import { requireAuth } from '../../_lib/auth'

@@ -1,5 +1,15 @@
 const BASE = '/api'
 
+export class ApiError extends Error {
+  status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
+
 async function req<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -9,7 +19,7 @@ async function req<T>(path: string, options?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }))
-    throw new Error(err.error ?? 'Erro desconhecido')
+    throw new ApiError(err.error ?? 'Erro desconhecido', res.status)
   }
 
   if (res.status === 204) {

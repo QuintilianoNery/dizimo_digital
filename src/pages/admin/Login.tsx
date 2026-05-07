@@ -54,6 +54,9 @@ export default function AdminLogin() {
             <Input label="Senha" type="password" {...register('senha')} error={errors.senha?.message} />
             <Button type="submit" loading={isSubmitting} fullWidth>Entrar</Button>
           </form>
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <a href="/admin/setup" style={{ fontSize: 12, color: 'var(--text-muted)' }}>Primeiro acesso? Fazer setup</a>
+          </div>
         </div>
       </div>
     </div>

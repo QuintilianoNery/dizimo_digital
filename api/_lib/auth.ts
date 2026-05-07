@@ -1,3 +1,4 @@
+import './loadEnv'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import jwt from 'jsonwebtoken'
 
@@ -43,6 +44,7 @@ export function setSessionCookie(res: VercelResponse, payload: JwtPayload): void
   const secret = process.env.JWT_SECRET ?? 'fallback-secret-change-me'
   const token = jwt.sign(payload, secret, { expiresIn: '30d' })
   const isProduction = process.env.NODE_ENV === 'production'
+  
   res.setHeader(
     'Set-Cookie',
     `dizimo_session=${token}; Path=/; HttpOnly; SameSite=Lax${isProduction ? '; Secure' : ''}; Max-Age=${30 * 24 * 3600}`

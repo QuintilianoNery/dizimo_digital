@@ -1,3 +1,4 @@
+import '../../_lib/loadEnv'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { z } from 'zod'
 import { prisma } from '../../_lib/prisma'

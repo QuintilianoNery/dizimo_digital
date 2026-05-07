@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { api } from '../../services/api'
+import { ApiError, api } from '../../services/api'
 import { useAuth } from '../../contexts/AuthContext'
 import Input from '../../components/ui/Input'
 import Button from '../../components/ui/Button'
@@ -17,6 +17,15 @@ const schema = z.object({
 }).refine(d => d.senha === d.confirmSenha, { message: 'As senhas não coincidem', path: ['confirmSenha'] })
 
 type FormData = z.infer<typeof schema>
+
+function getSetupErrorMessage(error: unknown) {
+  if (error instanceof ApiError && error.status === 404) {
+    return 'Endpoint de setup não encontrado (404). Isso normalmente acontece quando a API /api não está rodando no ambiente local. Use "vercel dev" para testar as rotas serverless e tente novamente.'
+  }
+
+  if (error instanceof Error) return error.message
+  return 'Erro ao criar conta'
+}
 
 export default function AdminSetup() {
   const { refresh } = useAuth()
@@ -34,7 +43,7 @@ export default function AdminSetup() {
       await refresh()
       navigate('/admin')
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao criar conta')
+      setError(getSetupErrorMessage(e))
     }
   }
 

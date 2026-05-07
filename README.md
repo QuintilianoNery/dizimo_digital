@@ -16,6 +16,18 @@ Sistema para gestão de dízimo, ofertas e doações em três áreas separadas: 
 - Reset de senha de paróquia
 - Dashboard administrativo (scaffold)
 
+#### Acesso administrativo
+
+Não há login administrativo padrão fixo neste projeto.
+
+O acesso admin funciona assim:
+
+1. Primeiro acesso: criar a conta em `/admin/setup` (nome, e-mail e senha com mínimo de 8 caracteres).
+2. Depois disso: entrar em `/admin/login` com o e-mail e senha cadastrados no setup.
+
+emailLogin	adm@adm.com
+senha	adm123456
+
 ### Área Paroquial
 - Login por identificador da paróquia (código/e-mail) e senha
 - Configuração de percentuais com versionamento (`configuracao_paroquia`)
@@ -65,6 +77,62 @@ cp .env.example .env
 npm install
 ```
 
+### 2.2) Usar banco local via Docker (recomendado)
+
+Se você não tiver PostgreSQL instalado localmente, pode subir um contêiner com o banco com o comando:
+
+```bash
+npm run db:up
+# aguarde o banco ficar pronto
+npm run db:ready
+```
+
+Há um atalho que sobe o container, aguarda e executa geração/migração/seed:
+
+```bash
+npm run db:init
+```
+
+Comando para acessar o prisma studio
+```bash
+npx prisma studio
+```
+
+
+Os valores do banco (usuário/senha/db) foram sincronizados com `.env.example` (`postgres:postgres` e `dizimo_digital`).
+
+**Comandos rápidos**
+
+```bash
+# Iniciar frontend + API (como antes)
+npm run dev
+
+# Parar o container DB
+npm run db:down
+
+# Se precisar recriar o DB (leva a migrações/seed)
+npm run db:init
+```
+
+Adicionais:
+
+```bash
+# Reiniciar apenas o container do banco
+npm run db:restart
+
+# Reiniciar a aplicação (front + API)
+npm run app:restart
+```
+
+
+### 2.1) Autenticar Vercel CLI (primeira vez)
+
+Como a API local usa `vercel dev`, faça login uma vez:
+
+```bash
+npx vercel login
+```
+
 ### 3) Banco de dados
 
 ```bash
@@ -75,16 +143,22 @@ npm run db:seed
 
 ### 4) Rodar localmente
 
-Frontend apenas:
+Frontend + API serverless (recomendado):
 
 ```bash
 npm run dev
 ```
 
-Frontend + API serverless (recomendado para testar auth/API):
+Isso inicia automaticamente:
+
+- API serverless em `http://localhost:3000`
+- Frontend Vite em `http://localhost:5173`
+
+Comandos úteis separados:
 
 ```bash
-vercel dev
+npm run dev:api   # sobe apenas API
+npm run dev:web   # sobe apenas frontend
 ```
 
 ## Deploy (Vercel)
@@ -92,7 +166,7 @@ vercel dev
 Com `DATABASE_URL` e `JWT_SECRET` configurados no projeto Vercel:
 
 ```bash
-vercel deploy
+vercel deploy 
 ```
 
 ## Observações
