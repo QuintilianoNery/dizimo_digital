@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { SessionUser } from '../types'
 import { api } from '../services/api'
 
@@ -15,24 +15,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null)
   const [loading, setLoading] = useState(true)
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     try {
-      const data = await api.auth.session() as SessionUser
-      setUser(data)
+      const data = await api.auth.session() as { authenticated: boolean; role?: SessionUser['role']; user?: SessionUser }
+      if (data.authenticated && data.role && data.user) {
+        setUser({ ...data.user, role: data.role })
+      } else {
+        setUser(null)
+      }
     } catch {
       setUser(null)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  async function logout() {
+  const logout = useCallback(async () => {
     await api.auth.logout()
     setUser(null)
-    localStorage.removeItem('dizimo_remember')
-  }
+  }, [])
 
-  useEffect(() => { refresh() }, [])
+  useEffect(() => {
+    void refresh()
+  }, [refresh])
 
   return (
     <AuthContext.Provider value={{ user, loading, logout, refresh }}>
@@ -43,6 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
+  if (!ctx) {
+    throw new Error('useAuth must be used within AuthProvider')
+  }
   return ctx
 }

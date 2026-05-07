@@ -22,14 +22,12 @@ const pastoraisMovimentos = [
 ]
 
 async function main() {
-  console.log('Seeding pastorais/movimentos...')
   for (const item of pastoraisMovimentos) {
     const exists = await prisma.pastoralMovimento.findFirst({ where: { nome: item.nome } })
     if (!exists) {
       await prisma.pastoralMovimento.create({ data: item })
     }
   }
-  console.log('Seed concluído.')
 }
 
 main()

@@ -5,12 +5,10 @@ import { requireAuth } from '../../_lib/auth'
 
 const updateSchema = z.object({
   nome: z.string().min(2).optional(),
-  cpf: z.string().optional().nullable(),
   dataNascimento: z.string().optional().nullable(),
   telefone: z.string().optional().nullable(),
   email: z.string().email().optional().nullable(),
   endereco: z.string().optional().nullable(),
-  pastoralMovimentoId: z.string().uuid().optional().nullable(),
   status: z.enum(['ativo', 'inativo']).optional(),
 })
 
@@ -27,7 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'GET') {
     const full = await prisma.dizimista.findUnique({
       where: { id },
-      include: { pastoralMovimento: true, doacoes: { orderBy: { data: 'desc' } } },
+      include: { doacoes: { orderBy: { createdAt: 'desc' } } },
     })
     return res.status(200).json(full)
   }

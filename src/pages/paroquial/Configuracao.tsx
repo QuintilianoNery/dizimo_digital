@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -28,7 +28,7 @@ export default function Configuracao() {
     resolver: zodResolver(schema),
   })
 
-  const load = () => {
+  const load = useCallback(() => {
     api.paroquial.configuracao.get().then((d: unknown) => {
       const data = d as { atual: ConfiguracaoParoquia | null; historico: ConfiguracaoParoquia[] }
       setConfigAtual(data.atual)
@@ -43,9 +43,9 @@ export default function Configuracao() {
         })
       }
     })
-  }
+  }, [reset])
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
   const onSubmit = async (data: FormData) => {
     setError('')

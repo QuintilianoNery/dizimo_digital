@@ -1,75 +1,101 @@
-# React + TypeScript + Vite
+# Dízimo Digital
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema para gestão de dízimo, ofertas e doações em três áreas separadas: **Administrativa**, **Paroquial** e **CEBs**.
 
-Currently, two official plugins are available:
+## Rotas principais
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Admin**: `/admin/login` (login exclusivo)
+- **Paroquial + CEB**: `/login` (login compartilhado com fluxos distintos)
 
-## React Compiler
+## Funcionalidades implementadas
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Área Administrativa
+- Primeiro acesso com criação de senha do administrador (`/admin/setup`)
+- Login por e-mail e senha
+- CRUD de paróquias
+- Reset de senha de paróquia
+- Dashboard administrativo (scaffold)
 
-Note: This will impact Vite dev & build performances.
+### Área Paroquial
+- Login por identificador da paróquia (código/e-mail) e senha
+- Configuração de percentuais com versionamento (`configuracao_paroquia`)
+- Geração de alertas para CEBs quando percentual é alterado
+- CRUD de CEBs
+- Reset de senha de CEB
+- CRUD de pastorais/movimentos
+- Dashboard com resumo e scaffold de relatórios/exportação
 
-## Expanding the ESLint configuration
+### Área CEB
+- Login por paróquia + CEB + senha
+- Alertas de alteração de percentual ao acessar dashboard
+- CRUD de conselheiros comunitários
+- CRUD de dizimistas
+- CRUD de doações (com competência mês/ano padrão no período atual e edição manual)
+- Dashboard com resumo e scaffold de exportação
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Autenticação e sessão
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Sessão em cookie HTTP-only (`dizimo_session`)
+- Persistência após refresh (logout apenas explícito)
+- Senhas com `bcryptjs`
+- “Lembrar login” salva apenas identificadores (nunca senha):
+  - Paroquial: identificador da paróquia
+  - CEB: identificador da paróquia + CEB
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Frontend: React + Vite + TypeScript + React Router
+- API: Vercel Serverless Functions (`/api/*`)
+- Banco: PostgreSQL + Prisma
+- Validação: Zod
+
+## Configuração local
+
+### 1) Variáveis de ambiente
+
+Crie `.env` com base em `.env.example`:
+
+```bash
+cp .env.example .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2) Instalar dependências
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3) Banco de dados
+
+```bash
+npm run db:generate
+npm run db:migrate -- --name init
+npm run db:seed
+```
+
+### 4) Rodar localmente
+
+Frontend apenas:
+
+```bash
+npm run dev
+```
+
+Frontend + API serverless (recomendado para testar auth/API):
+
+```bash
+vercel dev
+```
+
+## Deploy (Vercel)
+
+Com `DATABASE_URL` e `JWT_SECRET` configurados no projeto Vercel:
+
+```bash
+vercel deploy
+```
+
+## Observações
+
+- O browser **não acessa banco diretamente**; apenas via API.
+- Endpoints de exportação Excel/PDF estão como scaffold (TODO explícito nas telas).

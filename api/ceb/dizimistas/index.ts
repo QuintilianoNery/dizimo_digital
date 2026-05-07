@@ -5,12 +5,10 @@ import { requireAuth } from '../../_lib/auth'
 
 const createSchema = z.object({
   nome: z.string().min(2),
-  cpf: z.string().optional().nullable(),
   dataNascimento: z.string().optional().nullable(),
   telefone: z.string().optional().nullable(),
   email: z.string().email().optional().nullable(),
   endereco: z.string().optional().nullable(),
-  pastoralMovimentoId: z.string().uuid().optional().nullable(),
 })
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -23,7 +21,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const dizimistas = await prisma.dizimista.findMany({
       where: { cebId },
       orderBy: { nome: 'asc' },
-      include: { pastoralMovimento: { select: { nome: true } } },
     })
     return res.status(200).json(dizimistas)
   }
@@ -37,7 +34,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         dataNascimento: parsed.data.dataNascimento ? new Date(parsed.data.dataNascimento) : null,
         cebId,
       },
-      include: { pastoralMovimento: { select: { nome: true } } },
     })
     return res.status(201).json(d)
   }

@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const paroquias = await prisma.paroquia.findMany({
       where,
       orderBy: { nome: 'asc' },
-      select: { id: true, nome: true, codigoParoquia: true, logoUrl: true, status: true, email: true, telefone: true, paroco: true, createdAt: true },
+      select: { id: true, nome: true, codigoParoquia: true, emailLoginSecretaria: true, logoUrl: true, status: true, email: true, telefone: true, paroco: true, createdAt: true },
     })
     return res.status(200).json(paroquias)
   }

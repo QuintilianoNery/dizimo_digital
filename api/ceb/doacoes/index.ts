@@ -4,18 +4,20 @@ import { prisma } from '../../_lib/prisma'
 import { requireAuth } from '../../_lib/auth'
 
 const createSchema = z.object({
-  dizimistaId: z.string().uuid(),
-  tipo: z.enum(['dizimo', 'oferta', 'campanha']),
+  dizimistaId: z.string().uuid().optional().nullable(),
   valor: z.number().positive(),
-  data: z.string().datetime(),
-  observacao: z.string().optional().nullable(),
+  competenciaMes: z.number().int().min(1).max(12).optional(),
+  competenciaAno: z.number().int().min(2000).optional(),
+  tipoDoacao: z.enum(['dizimo', 'oferta', 'doacao']),
+  formaPagamento: z.enum(['dinheiro', 'pix', 'transferencia']),
+  observacoes: z.string().optional().nullable(),
 })
 
 const filterSchema = z.object({
   dizimistaId: z.string().uuid().optional(),
-  tipo: z.enum(['dizimo', 'oferta', 'campanha']).optional(),
-  de: z.string().optional(),
-  ate: z.string().optional(),
+  tipoDoacao: z.enum(['dizimo', 'oferta', 'doacao']).optional(),
+  competenciaMes: z.coerce.number().int().min(1).max(12).optional(),
+  competenciaAno: z.coerce.number().int().min(2000).optional(),
 })
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -31,17 +33,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       where: {
         cebId,
         ...(filters.dizimistaId ? { dizimistaId: filters.dizimistaId } : {}),
-        ...(filters.tipo ? { tipo: filters.tipo } : {}),
-        ...(filters.de || filters.ate
-          ? {
-              data: {
-                ...(filters.de ? { gte: new Date(filters.de) } : {}),
-                ...(filters.ate ? { lte: new Date(filters.ate) } : {}),
-              },
-            }
-          : {}),
+        ...(filters.tipoDoacao ? { tipoDoacao: filters.tipoDoacao } : {}),
+        ...(filters.competenciaMes ? { competenciaMes: filters.competenciaMes } : {}),
+        ...(filters.competenciaAno ? { competenciaAno: filters.competenciaAno } : {}),
       },
-      orderBy: { data: 'desc' },
+      orderBy: [{ competenciaAno: 'desc' }, { competenciaMes: 'desc' }, { createdAt: 'desc' }],
       include: { dizimista: { select: { nome: true } } },
     })
     return res.status(200).json(doacoes)
@@ -51,18 +47,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const parsed = createSchema.safeParse(req.body)
     if (!parsed.success) return res.status(400).json({ error: 'Dados inválidos', details: parsed.error.flatten() })
 
-    const dizimista = await prisma.dizimista.findFirst({ where: { id: parsed.data.dizimistaId, cebId } })
-    if (!dizimista) return res.status(403).json({ error: 'Dizimista não pertence a este CEB' })
+    if (parsed.data.dizimistaId) {
+      const dizimista = await prisma.dizimista.findFirst({ where: { id: parsed.data.dizimistaId, cebId } })
+      if (!dizimista) return res.status(403).json({ error: 'Dizimista não pertence a este CEB' })
+    }
 
+    const now = new Date()
     const doacao = await prisma.doacao.create({
       data: {
         ...parsed.data,
-        data: new Date(parsed.data.data),
-        cebId,
-        registradoPorId: auth.id,
+        dizimistaId: parsed.data.dizimistaId ?? null,
+        competenciaMes: parsed.data.competenciaMes ?? now.getMonth() + 1,
+        competenciaAno: parsed.data.competenciaAno ?? now.getFullYear(),
       },
       include: { dizimista: { select: { nome: true } } },
     })
+
     return res.status(201).json(doacao)
   }
 

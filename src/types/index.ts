@@ -1,15 +1,8 @@
-export interface Administrador {
-  id: string
-  nome: string
-  email: string
-  createdAt: string
-}
-
 export interface Paroquia {
   id: string
   codigoParoquia: string
   nome: string
-  emailLoginSecretaria: string
+  emailLoginSecretaria?: string
   email?: string | null
   telefone?: string | null
   endereco?: string | null
@@ -56,11 +49,11 @@ export interface PastoralMovimento {
 export interface ConselheiroComunitario {
   id: string
   cebId: string
+  pastoralMovimentoId?: string | null
   nome: string
-  cargo: string
-  email?: string | null
   telefone?: string | null
-  emailLogin?: string | null
+  email?: string | null
+  cargo?: string | null
   status: 'ativo' | 'inativo'
 }
 
@@ -68,13 +61,10 @@ export interface Dizimista {
   id: string
   cebId: string
   nome: string
-  cpf?: string | null
-  dataNascimento?: string | null
   telefone?: string | null
   email?: string | null
   endereco?: string | null
-  pastoralMovimentoId?: string | null
-  pastoralMovimento?: { nome: string } | null
+  dataNascimento?: string | null
   status: 'ativo' | 'inativo'
   createdAt: string
 }
@@ -82,12 +72,15 @@ export interface Dizimista {
 export interface Doacao {
   id: string
   cebId: string
-  dizimistaId: string
+  dizimistaId?: string | null
   dizimista?: { nome: string }
-  tipo: 'dizimo' | 'oferta' | 'campanha'
   valor: number
-  data: string
-  observacao?: string | null
+  competenciaMes: number
+  competenciaAno: number
+  tipoDoacao: 'dizimo' | 'oferta' | 'doacao'
+  formaPagamento: 'dinheiro' | 'pix' | 'transferencia'
+  observacoes?: string | null
+  dataLancamento: string
   createdAt: string
 }
 
@@ -96,12 +89,11 @@ export interface AlertaAlteracaoPercentual {
   paroquiaId: string
   cebId: string
   configuracaoParoquiaId: string
-  configuracaoParoquia?: ConfiguracaoParoquia
   percentualAnterior: number
   percentualNovo: number
   mensagem: string
-  lido: boolean
-  criadoEm: string
+  lidoEm?: string | null
+  createdAt: string
 }
 
 export type UserRole = 'admin' | 'paroquial' | 'ceb'

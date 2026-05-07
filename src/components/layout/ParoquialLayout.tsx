@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 
 const navItems = [
-  { to: '/paroquial', label: '🏠 Dashboard', exact: true },
+  { to: '/paroquial/dashboard', label: '🏠 Dashboard', exact: true },
   { to: '/paroquial/cebs', label: '🏘 CEBs' },
   { to: '/paroquial/pastorais', label: '🕊 Pastorais' },
   { to: '/paroquial/configuracao', label: '⚙ Configuração' },

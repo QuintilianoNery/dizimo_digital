@@ -1,18 +1,21 @@
 const BASE = '/api'
 
-async function req<T>(
-  path: string,
-  options?: RequestInit
-): Promise<T> {
+async function req<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     ...options,
   })
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }))
     throw new Error(err.error ?? 'Erro desconhecido')
   }
+
+  if (res.status === 204) {
+    return {} as T
+  }
+
   return res.json()
 }
 
@@ -36,14 +39,12 @@ function del<T>(path: string) {
   return req<T>(path, { method: 'DELETE' })
 }
 
-// Auth
 export const api = {
   auth: {
     adminLogin: (email: string, senha: string) => post('/auth/admin-login', { email, senha }),
     adminSetup: (data: { nome: string; email: string; senha: string }) => post('/auth/admin-setup', data),
-    paroquialLogin: (identifier: string, senha: string) => post('/auth/paroquial-login', { identifier, senha }),
-    cebLogin: (paroquiaIdentifier: string, cebIdentifier: string, senha: string) =>
-      post('/auth/ceb-login', { paroquiaIdentifier, cebIdentifier, senha }),
+    paroquialLogin: (identifier: string, senha: string) => post('/auth/paroquial-login', { paroquiaIdentifier: identifier, senha }),
+    cebLogin: (paroquiaIdentifier: string, cebIdentifier: string, senha: string) => post('/auth/ceb-login', { paroquiaIdentifier, cebIdentifier, senha }),
     logout: () => post('/auth/logout', {}),
     session: () => get('/auth/session'),
   },
@@ -93,7 +94,6 @@ export const api = {
       get: (id: string) => get(`/ceb/conselheiros/${id}`),
       update: (id: string, data: unknown) => put(`/ceb/conselheiros/${id}`, data),
       delete: (id: string) => del(`/ceb/conselheiros/${id}`),
-      resetPassword: (id: string, novaSenha: string) => patch(`/ceb/conselheiros/${id}`, { novaSenha }),
     },
     dizimistas: {
       list: () => get('/ceb/dizimistas'),
