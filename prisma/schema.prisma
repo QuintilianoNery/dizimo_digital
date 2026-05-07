@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Administrador {
+  id          String   @id @default(uuid())
+  nome        String
+  emailLogin  String   @unique @map("email_login")
+  senhaHash   String   @map("senha_hash")
+  status      String   @default("ativo")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  paroquias   Paroquia[]
+  @@map("administrador")
+}
+
+model Paroquia {
+  id                   String   @id @default(uuid())
+  administradorCriouId String?  @map("administrador_criou_id")
+  codigoParoquia       String   @unique @map("codigo_paroquia")
+  logoUrl              String?  @map("logo_url")
+  nome                 String
+  email                String?
+  telefone             String?
+  endereco             String?
+  fundacao             String?
+  cnpj                 String?
+  paroco               String?
+  emailLoginSecretaria String   @map("email_login_secretaria")
+  senhaHash            String   @map("senha_hash")
+  status               String   @default("ativo")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+  administrador        Administrador? @relation(fields: [administradorCriouId], references: [id])
+  configuracoes        ConfiguracaoParoquia[]
+  cebs                 Ceb[]
+  alertas              AlertaAlteracaoPercentual[]
+  @@map("paroquia")
+}
+
+model ConfiguracaoParoquia {
+  id                              String    @id @default(uuid())
+  paroquiaId                      String    @map("paroquia_id")
+  percentualRepasseDizimoCebs     Float     @map("percentual_repasse_dizimo_cebs")
+  percentualRepasseOfertaCebs     Float     @map("percentual_repasse_oferta_cebs")
+  percentualRepaseCuriaDiocesana  Float     @map("percentual_repasse_curia_diocesana")
+  percentualRepasseDiocese        Float     @map("percentual_repasse_diocese")
+  vigenteDesde                    DateTime  @map("vigente_desde")
+  vigenteAte                      DateTime? @map("vigente_ate")
+  ativa                           Boolean   @default(true)
+  alteradoPorId                   String?   @map("alterado_por_id")
+  createdAt                       DateTime  @default(now()) @map("created_at")
+  updatedAt                       DateTime  @updatedAt @map("updated_at")
+  paroquia                        Paroquia  @relation(fields: [paroquiaId], references: [id])
+  alertas                         AlertaAlteracaoPercentual[]
+  @@map("configuracao_paroquia")
+}
+
+model Ceb {
+  id           String   @id @default(uuid())
+  paroquiaId   String   @map("paroquia_id")
+  codigoCeb    String   @unique @map("codigo_ceb")
+  nome         String
+  emailLogin   String   @map("email_login")
+  senhaHash    String   @map("senha_hash")
+  telefone     String?
+  status       String   @default("ativo")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  paroquia     Paroquia @relation(fields: [paroquiaId], references: [id])
+  conselheiros ConselheiroComunitario[]
+  dizimistas   Dizimista[]
+  doacoes      Doacao[]
+  alertas      AlertaAlteracaoPercentual[]
+  @@map("ceb")
+}
+
+model PastoralMovimento {
+  id           String   @id @default(uuid())
+  nome         String
+  tipo         String
+  status       String   @default("ativo")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  conselheiros ConselheiroComunitario[]
+  @@map("pastoral_movimento")
+}
+
+model ConselheiroComunitario {
+  id                  String            @id @default(uuid())
+  cebId               String            @map("ceb_id")
+  pastoralMovimentoId String?           @map("pastoral_movimento_id")
+  nome                String
+  telefone            String?
+  email               String?
+  cargo               String?
+  status              String            @default("ativo")
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
+  ceb                 Ceb               @relation(fields: [cebId], references: [id])
+  pastoralMovimento   PastoralMovimento? @relation(fields: [pastoralMovimentoId], references: [id])
+  @@map("conselheiro_comunitario")
+}
+
+model Dizimista {
+  id             String    @id @default(uuid())
+  cebId          String    @map("ceb_id")
+  nome           String
+  telefone       String?
+  email          String?
+  endereco       String?
+  dataNascimento DateTime? @map("data_nascimento")
+  status         String    @default("ativo")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  ceb            Ceb       @relation(fields: [cebId], references: [id])
+  doacoes        Doacao[]
+  @@map("dizimista")
+}
+
+model Doacao {
+  id             String    @id @default(uuid())
+  cebId          String    @map("ceb_id")
+  dizimistaId    String?   @map("dizimista_id")
+  valor          Float
+  competenciaMes Int       @map("competencia_mes")
+  competenciaAno Int       @map("competencia_ano")
+  tipoDoacao     String    @map("tipo_doacao")
+  formaPagamento String    @map("forma_pagamento")
+  observacoes    String?
+  dataLancamento DateTime  @default(now()) @map("data_lancamento")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  ceb            Ceb       @relation(fields: [cebId], references: [id])
+  dizimista      Dizimista? @relation(fields: [dizimistaId], references: [id])
+  @@map("doacao")
+}
+
+model AlertaAlteracaoPercentual {
+  id                     String               @id @default(uuid())
+  paroquiaId             String               @map("paroquia_id")
+  cebId                  String               @map("ceb_id")
+  configuracaoParoquiaId String               @map("configuracao_paroquia_id")
+  percentualAnterior     Float                @map("percentual_anterior")
+  percentualNovo         Float                @map("percentual_novo")
+  mensagem               String
+  lidoEm                 DateTime?            @map("lido_em")
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
+  paroquia               Paroquia             @relation(fields: [paroquiaId], references: [id])
+  ceb                    Ceb                  @relation(fields: [cebId], references: [id])
+  configuracaoParoquia   ConfiguracaoParoquia @relation(fields: [configuracaoParoquiaId], references: [id])
+  @@map("alerta_alteracao_percentual")
+}
