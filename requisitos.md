@@ -1,144 +1,267 @@
-crie um mapa mental onde vou definir e criar as funcionalidades de cada parte do sistema  Dizimo Digital
+# Dízimo Digital
 
-Dizimo Digital.
-O Dizimo Digital é uma ferramenta que possibilita as CEBs registrarem seus dizimostas e docoes, bem como a paroquia, ter de forma centralizada os totais repassados e doados
+## 1. Objetivo
 
-Requisitos
-Tela de login: 
-- Selecionar Administrativo, Paroquial, Comunidade 
-  - Em Administrativo, tem Login e Senha
-  - Em Paróquia tem a lista de paroquias cadastradas por nome, podendo digitar o nome ou o código da paroquia para selecionar mais rápido e campo de senha, onde terá a opção lembrar dados de login, onde irá salvar a paróquia selecionada, para faciliar a próxima vez que for fazer login 
-  - Em CEBs, deverá selecionar a paróquia, onde ter que selecionar a páróquia por nome ou id digitando, selecionar a comunidade que está vinculada aquela paróquia, deve ter também o botão de lembrar dados de login, onde irá lembrar a paróquia e a comunidade selecionada, para facilitar o login da proxima vez.
-- Tela de login administrativo, diferente do login de paroquia e CEBs
-- Terá três áreas do sistema:
-  - Área Administrativa
-  - Área Paroquial
-  - Área CEBs
+O Dízimo Digital é uma ferramenta para registrar dízimos, doações e ofertas das CEBs, consolidando de forma centralizada os totais repassados e doados para a paróquia e para as áreas administrativas.
 
-Area Administrativa
-- Senha no primeiro login, onde o sistema irá solicitar a criação de uma senha para o administrador, onde irá salvar no banco de dados, para depois fazer login normalmente, e ter acesso a área administrativa do sistema, onde poderá cadastrar as paroquias e as comunidades, além de ter acesso aos relatórios e dashboards do sistema.
+## 2. Visão geral do sistema
 
-- O cadastro administrativo terá as funcionalidades:
-  - CRUD de cadastro de paroquias
-  - Reset de senha de paroquia
+- Área Administrativa
+- Área Paroquial
+- Área CEBs
 
-- CRUD de cadastro de paroquias:
-  - Cadastrar paroquias dentro da área administrativa
-    - email
-    - telefone 
-    - endereço 
-    - fundação 
-    - cnpj
-    - pároco
-    - cadastro da paroquia um email para ser a senha da secretaria paroquial, onde será a conta principal admin da paróquia
-  - Resetar senha de paroquia:
-    - O administrador do sistema, poderá resetar a senha da paroquia, onde irá solicitar a senha do administrador para confirmar a ação, depois irá solicitar a nova senha para a paroquia, e depois irá salvar a nova senha no banco de dados, para que a paroquia possa fazer login com a nova senha.
-    - 
+## 3. Login e autenticação
 
-Área paroquial
-- A área paroquial, terá as seguintes funcionalidades:
-  - Configuração da paróquia:
-    - Configuração do percentual de repasse do dizimo, onde a paróquia irá cadastrar o percentual de repasse do dizimo, para que o sistema possa calcular o valor do repasse do dizimo, e mostrar no dashboard paroquial e das CEBs e relatório de dizimo.
-    - A paróquia realizando a modificação do percentual, deve gerar um alerta para cada CEBs, mostrando logo ao realziar login, que houve uma modificação no percentual de repasse do dizimo, e mostrar o percentual antigo e o novo percentual, para que as CEBs possam se organizar financeiramente com a mudança do percentual de repasse do dizimo.
-    - Ao modificar o percentual, não vai modificar os valores de repasses dos meses anteriores, deve mudar apenas no mes corrente, atualizando automaticamente assim que as comunidades marcarem como atualizar o percentual de repasse do dizimo e oferta.
-    - Campo de percentual repasse dizimo CEBs
-    - Campo de percentual repasse oferta CEBs
-    - Campo de percentual repasse Curia Diocesana
-    - Campo de percentual repasse Diocese
-  - CRUD de cadastro de CEBs
-  - Reset de senha de CEBs
-  - Dashboard de dizimo, onde irá mostrar o total de dizimo arrecadado, total de doações, total de ofertas, total de repasses, percentual de repasse, repasse por mês e por ano, onde a paroquia poderá baixar esses dados em formato excel ou pdf.
-  - Relatório de dizimo, onde irá mostrar o total de dizimo arrecadado, total de doações, total de ofertas, total de repasses, percentual de repasse, repasse por mês e por ano, onde a paroquia poderá baixar esses dados em formato excel ou pdf.
-  - Requisitos CRUD de CEBs:
-    - Cadastrar CEBs dentro da área paroquial, onde irá solicitar o nome da CEBs, o email para ser a senha da CEBs, onde será a conta principal admin da CEBs, e o telefone de contato da CEBs.
-    - Resetar senha de CEBs:
-      - O administrador da paroquia, poderá resetar a senha da CEBs, onde irá solicitar a senha do administrador para confirmar a ação, depois irá solicitar a nova senha para a CEBs, e depois irá salvar a nova senha no banco de dados, para que a CEBs possa fazer login com a nova senha.
-  - Cada CEB cadastrada, estárá vinculada diretamente com o ID no banco de dados com a chave estrangeira da paróquia
-  - O vinculo da paróquia é 1:N, onde uma paróquia pode ter várias CEBs
-  - Lista de CEBs cadastradas na tela 
-  - Campos do CRUD de CEBs:
-    - Nome da CEBs
-    - Email para ser a senha da CEBs que será utilizado pelo coordenador da CEBs, Tizoreiro e Coordenador do Dízimo
-    - Lista de Conselheiros cadastrados dentro da CEB pela Área Comunidade
-  - Cadastro de Pastorais e movimentos:
-    - CRUD de cadastro pastorais e movimentos, cadastro simples que será uma lista para as CEBs selecionarem na hora do cadastro do conselheiro comunitário
-      - Lista de pastorais e movimentos:(Vir pré cadastrado, mas como CRUD, onde poderar alter, excluir e cadastrar novas pastorais e movimentos)
-      - Coordenacor Comunitário
-      - Tesoureiro
-      - Secretário
-      - Pastoral do Dízimo
-      - Pastoral da Liturgia
-      - Pastoral do Canto/Litúrgica Musical
-      - Pastoral dos Coroinhas
-      - Pastoral dos Acólitos
-      - Pastoral dos Leitores
-      - Pastoral da Acolhida
-      - Pastoral da Comunicação (PASCOM)
-      - Pastoral do Batismo
-      - Pastoral da Crisma
-      - Pastoral da Catequese
-      - Pastoral Familiar
-      - Pastoral Matrimonial
-  - Dashboard de dizimo:
-    - Visão Geral ou por CBs, onde irá mostrar as seguintes informações:
-      - Total de dizimo arrecadado 
-      - Total de doações
-      - Total de ofertas
-      - Total de repasses
-    - Percentual de repasse para a diocese e curia diocesanda, ver depois a regra, mas inicialmente é o total de repassado das comunidades para a paróquia, 
-    - Repassse por mês
-    - Repassse por ano
-    - Opção de baixar esses dados em formato excel ou pdf.
-    - Ter Filtro par para selecionar o período, a CEB e ver as informações de cadastros pot CEBs, onde o filtro de período, pode ser por mês, trimestre, semestre ou ano.
+### 3.1 Área Administrativa
 
-Área CEBs
-  Cadastro de conselheiro comunitário:
-        - Nome
-        - Telefone
-        - Email
-        - Cargo
-        - Chave estrangeira da CEB com o cadastro do Conselheiro comunitário, onde o conselheiro pode estar vinculado diretamente a CEB
-        - Deverá ser apenas um cadastro simples, para a paróquia ter controle
-  - Cadastro Dizimista:
-    - Nome
-    - Telefone 
-    - Email (opcional)
-    - Endereço
-    - Data de nascimento
-  - Cadastro de doações:
-    - Valor da doação
-    - Mês e ano da doação (Seleciona de forma automática o mês e ano atual, mas pode ser editado para selecionar o mês e ano da doação)
-    - Tipo da doação (dízimo, oferta, doação)
-    - Forma de pagamento (dinheiro, pix, transferência bancária)
-    - Observações (opcional)
- 
-  - Dashboard com as seguintes informações:
-    - Total de dizimo arrecadado
-    - Total de doações
-    - Total de ofertas
-    - Total de repasse de Dizimo do mês, calculado no percentual cadastrado pela paróquia
-    - Total de repasse de Ofertas do mês, calculado no percentual cadastrado pela paróquia
-    - Repassse por ano
-    - Percentual de repasse cadastrado pela paróquia
-    - Opção de baixar esses dados em formato excel ou pdf.
-    - Ter Filtro par para selecionar o período, onde o filtro de período, pode ser por mês, trimestre, semestre ou ano.
+- Tela exclusiva de login, separada das demais áreas.
+- No primeiro acesso, o sistema solicita a criação da senha do administrador.
+- Depois do primeiro acesso, o login passa a ser normal com login e senha.
 
-Regras Gerais:
-- O sistema deve ser responsivo, para que possa ser acessado tanto em computadores quanto em dispositivos móveis.
-- O sistema deve ter um design intuitivo e fácil de usar, para que os usuários possam navegar facilmente pelas funcionalidades do sistema.
-- O sistema deve ser seguro, para proteger os dados dos usuários e das paróquias, utilizando criptografia para senhas e dados sensíveis.
-- O sistema deve criptografar os dados sensiveis como senhas, utilizando algoritmos de criptografia seguros, como bcrypt ou Argon2, para garantir a proteção dos dados dos usuários.
-- O sistema deve criptografar os dados sensiveis como informações pessoais dos dizimistas, utilizando algoritmos de criptografia seguros, para garantir a proteção dos dados dos usuários. (não implementar agora, mas deixar a estrutura do banco de dados preparada para isso, para que no futuro possa ser implementado a criptografia dos dados sensíveis dos dizimistas)
+### 3.2 Área Paroquial
 
-- Uma paróquia deverá ter o campo de configurações, onde irá configurar: 
-  - Percentual de repasse dizimo CEBs
-  - Percentual de repasse oferta CEBs
-  - Percentual de repasse Curia Diocesana
-  - Percentual de repasse Diocese
-- Paróquia 1:n CEBs
-- CEBs 1:n Conselheiros Comunitários
-- CEBs 1:n Dizimistas (Mas pode acontecer de ter Dizimista doando o dizimo em mais de uma CEBs, porém terá seu hash de identificaçaõ diferente)
-- CEBs 1:n Doações
-- Cada cadastro deve ter um hash id de identificação único, para garantir a segurança e integridade dos dados, e para facilitar a identificação dos registros no banco de dados. O hash id deve ser gerado utilizando algoritmos de hash seguros, como SHA-256 ou bcrypt, para garantir a proteção dos dados dos usuários. O hash id deve ser utilizado como chave primária para os registros no banco de dados, para garantir a integridade dos dados e facilitar a identificação dos registros.
+- O usuário seleciona a paróquia por nome ou pelo código da paróquia.
+- Existe campo de senha.
+- Existe a opção lembrar dados de login, salvando apenas o identificador da paróquia e nunca a senha.
 
-- O sistema deve ter duas URLs de login, uma do login para Area Administrativa, onde irá fazer o cadastro inicial da Paróquia, e outra URL para o login da Área Paroquial e CEBs, onde as paróquias e CEBs irão fazer login para acessar suas respectivas áreas do sistema. A URL de login para a Área Administrativa deve ser diferente da URL de login para a Área Paroquial e CEBs, para garantir a segurança do sistema e evitar confusões entre os usuários.
+### 3.3 Área CEBs
+
+- O usuário seleciona a paróquia por nome ou código.
+- Em seguida seleciona a comunidade/CEB vinculada à paróquia.
+- Existe campo de senha.
+- Existe a opção lembrar dados de login, salvando apenas o identificador da paróquia e da CEB.
+
+### 3.4 Rotas de login separadas
+
+- Uma URL exclusiva para a Área Administrativa.
+- Uma URL exclusiva para a Área Paroquial e CEBs.
+- Ao atualizar a página, o usuário não vai ser deslogado; somente ao clicar em sair o logout deve acontecer.
+
+## 4. Banco de dados recomendado
+
+### 4.1 Recomendação inicial
+
+- Banco recomendado: PostgreSQL, hospedado inicialmente em Vercel Postgres.
+- Motivos: modelagem relacional adequada para vínculos 1:N, integração simples com o fluxo de deploy na Vercel, boa base para relatórios, filtros e dashboards, e facilidade para evoluir o projeto sem trocar o banco depois.
+- Como o front será em React + Vite + TypeScript, o acesso ao banco deve acontecer por uma camada de API ou funções serverless. O navegador não deve acessar o banco diretamente.
+- Alternativa viável, caso você queira autenticação e armazenamento integrados desde o início: Supabase Postgres.
+
+### 4.2 Estratégia de chaves
+
+- Cada tabela principal usa `id` como chave primária.
+- Sugestão prática: `id` do tipo UUID ou ULID.
+- Se for necessário expor um identificador não sequencial para integrações externas, usar um `public_id` ou `hash_publico` separado.
+- Senhas devem usar bcrypt ou Argon2.
+- Não usar bcrypt para chaves primárias.
+
+## 5. Resumo de PK e FK por cadastro
+
+| Cadastro | Chave primária | Chaves estrangeiras |
+| --- | --- | --- |
+| Administrador do sistema | `id` | nenhuma |
+| Paróquia | `id` | `administrador_criou_id` -> `administrador.id` (opcional, para auditoria) |
+| Configuração da paróquia | `id` | `paroquia_id` -> `paroquia.id` |
+| CEB | `id` | `paroquia_id` -> `paroquia.id` |
+| Pastorais e movimentos | `id` | nenhuma |
+| Conselheiro comunitário | `id` | `ceb_id` -> `ceb.id`; `pastoral_movimento_id` -> `pastoral_movimento.id` (opcional) |
+| Dizimista | `id` | `ceb_id` -> `ceb.id` |
+| Doação | `id` | `ceb_id` -> `ceb.id`; `dizimista_id` -> `dizimista.id` (opcional) |
+| Alerta de alteração de percentual | `id` | `paroquia_id` -> `paroquia.id`; `ceb_id` -> `ceb.id`; `configuracao_paroquia_id` -> `configuracao_paroquia.id` |
+
+## 6. Cadastros e campos
+
+### 6.1 Administrador do sistema
+
+- `id` (PK)
+- `nome`
+- `email_login`
+- `senha_hash`
+- `status`
+- `created_at`
+- `updated_at`
+
+### 6.2 Paróquia
+
+- `id` (PK)
+- `administrador_criou_id` (FK opcional)
+- `codigo_paroquia` (único)
+- `logo_url` ou `logo_path` (upload da logo da paróquia)
+- `nome`
+- `email`
+- `telefone`
+- `endereco`
+- `fundacao`
+- `cnpj`
+- `pároco`
+- `email_login_secretaria`
+- `senha_hash`
+- `status`
+- `created_at`
+- `updated_at`
+
+Observação: o `email_login_secretaria` representa a conta principal admin da paróquia.
+Observação: a logo da paróquia deve aparecer no canto superior esquerdo do menu lateral da área paroquial e também acima do formulário de login, antes dos campos de login e senha, quando a paróquia for selecionada ou quando as configurações de acesso forem salvas.
+
+### 6.3 Configuração da paróquia
+
+- `id` (PK)
+- `paroquia_id` (FK)
+- `percentual_repasse_dizimo_cebs`
+- `percentual_repasse_oferta_cebs`
+- `percentual_repasse_curia_diocesana`
+- `percentual_repasse_diocese`
+- `vigente_desde`
+- `vigente_ate` (opcional)
+- `ativa`
+- `alterado_por_id` (opcional)
+- `created_at`
+- `updated_at`
+
+Regra importante: quando a paróquia alterar percentuais, o sistema deve criar uma nova versão da configuração para preservar o histórico dos meses anteriores.
+
+### 6.4 CEB
+
+- `id` (PK)
+- `paroquia_id` (FK)
+- `codigo_ceb` (único)
+- `nome`
+- `email_login`
+- `senha_hash`
+- `telefone`
+- `status`
+- `created_at`
+- `updated_at`
+
+Observação: uma paróquia pode ter várias CEBs, mas cada CEB pertence a apenas uma paróquia.
+
+### 6.5 Pastorais e movimentos
+
+- `id` (PK)
+- `nome`
+- `tipo` (pastoral ou movimento)
+- `status`
+- `created_at`
+- `updated_at`
+
+Observação: esta lista pode vir pré-cadastrada, mas permanece editável por CRUD.
+
+### 6.6 Conselheiro comunitário
+
+- `id` (PK)
+- `ceb_id` (FK)
+- `pastoral_movimento_id` (FK opcional)
+- `nome`
+- `telefone`
+- `email`
+- `cargo`
+- `status`
+- `created_at`
+- `updated_at`
+
+Observação: o campo `cargo` pode ser uma lista fixa ou uma tabela auxiliar, caso o projeto precise de maior controle no futuro.
+
+### 6.7 Dizimista
+
+- `id` (PK)
+- `ceb_id` (FK)
+- `nome`
+- `telefone`
+- `email` (opcional)
+- `endereco`
+- `data_nascimento`
+- `status`
+- `created_at`
+- `updated_at`
+
+Observação: se o mesmo dizimista doar em mais de uma CEB, cada vínculo pode gerar um registro próprio ou um vínculo separado, conforme a regra final do cadastro.
+
+### 6.8 Doação
+
+- `id` (PK)
+- `ceb_id` (FK)
+- `dizimista_id` (FK opcional)
+- `valor`
+- `competencia_mes`
+- `competencia_ano`
+- `tipo_doacao` (dízimo, oferta ou doação)
+- `forma_pagamento` (dinheiro, pix ou transferência bancária)
+- `observacoes` (opcional)
+- `data_lancamento`
+- `created_at`
+- `updated_at`
+
+Observação: o mês e o ano devem vir preenchidos automaticamente com o período atual, mas podem ser alterados manualmente.
+
+### 6.9 Alerta de alteração de percentual
+
+- `id` (PK)
+- `paroquia_id` (FK)
+- `ceb_id` (FK)
+- `configuracao_paroquia_id` (FK)
+- `percentual_anterior`
+- `percentual_novo`
+- `mensagem`
+- `lido_em` (opcional)
+- `created_at`
+- `updated_at`
+
+Observação: esse registro serve para notificar as CEBs quando a paróquia alterar percentuais de repasse.
+
+## 7. Funcionalidades por área
+
+### 7.1 Área Administrativa
+
+- Criar a senha inicial do administrador no primeiro acesso.
+- Manter acesso exclusivo para cadastro inicial e gestão administrativa.
+- CRUD de paróquias.
+- Reset de senha de paróquia com confirmação do administrador.
+- Acesso a relatórios e dashboards administrativos.
+
+### 7.2 Área Paroquial
+
+- Configurar percentuais de repasse.
+- Criar alerta para CEBs quando houver mudança de percentual.
+- CRUD de CEBs.
+- Reset de senha de CEBs com confirmação do administrador paroquial.
+- Dashboard com total de dízimo arrecadado, doações, ofertas, repasses, percentual de repasse, repasse por mês e por ano.
+- Relatórios com exportação em Excel ou PDF.
+- Filtros por mês, trimestre, semestre e ano.
+- Cadastro e manutenção de pastorais e movimentos.
+
+### 7.3 Área CEBs
+
+- Cadastro de conselheiros comunitários.
+- Cadastro de dizimistas.
+- Cadastro de doações.
+- Dashboard com total de dízimo arrecadado, doações, ofertas, repasses e percentual aplicado pela paróquia.
+- Exportação dos dados em Excel ou PDF.
+- Filtros por mês, trimestre, semestre e ano.
+
+## 8. Regras gerais
+
+- O sistema deve ser responsivo e funcionar bem em computador e mobile.
+- A interface deve ser intuitiva e simples.
+- As senhas devem ser criptografadas com bcrypt ou Argon2.
+- Os dados sensíveis dos dizimistas devem ficar preparados para criptografia futura.
+- O sistema não deve recalcular valores antigos quando a configuração percentual mudar; somente o período vigente deve ser afetado.
+- Cada cadastro deve ter um identificador único.
+- O sistema deve manter separação clara entre os acessos administrativo, paroquial e CEBs.
+
+## 9. Boas práticas de desenvolvimento
+
+- Usar TypeScript com tipagem forte e contratos explícitos.
+- Separar responsabilidades entre apresentação, regras de negócio e acesso a dados.
+- Evitar regras de negócio dentro de componentes visuais.
+- Usar serviços para orquestração de fluxo e repositórios para persistência.
+- Manter componentes pequenos, coesos e reutilizáveis.
+- Garantir validação de entrada e tratamento consistente de erros.
+- Preferir consultas indexadas, paginação e carregamento sob demanda em listas grandes.
+- Aplicar otimizações apenas onde houver ganho real, sem complexidade desnecessária.
+- Criar testes para fluxos críticos: login, cadastro, reset de senha, configuração de percentuais e relatórios.
+- Manter nomenclatura consistente, pastas organizadas e código fácil de ler e manter.
+
+## 10. Pontos para confirmar
+
+- Se você quiser seguir literalmente com "hash id", eu posso ajustar a modelagem para um identificador público separado do `id` técnico.
+- Se um conselheiro puder ter mais de uma pastoral ou movimento, vale criar uma tabela de vínculo N:N.
+- Se você quiser registrar doações avulsas sem vínculo com dizimista, o campo `dizimista_id` deve continuar opcional.
